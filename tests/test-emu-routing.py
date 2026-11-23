@@ -106,6 +106,29 @@ class EmuRouting(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn(b"init-force", result.stdout)
 
+    def test_emu_lemu_route(self):
+        noop = self.root / "initialized-xsai"
+        required = ["rocket-chip/common.sc", "rocket-chip/cde/common.sc",
+                    "rocket-chip/hardfloat/common.sc", "XSAICache/common.sc",
+                    "XSAICache/OpenNCB/common.sc", "CUTE/common.sc"]
+        for relative in required:
+            path = noop / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.touch()
+        spy = self.root / "make-spy"
+        self.stub(spy)
+        subprocess.run(
+            ["make", "-f", str(REPO / "Makefile"), "emu-lemu",
+             f"MAKE={spy}", f"NOOP_HOME={noop}"],
+            env=self.env, check=True, capture_output=True,
+        )
+        args = json.loads(self.capture.read_text())
+        self.assertEqual(args[:3], ["-C", str(noop), "lemu"])
+        self.assertIn("CONFIG=DefaultMatrixConfig", args)
+        self.assertIn("WITH_CHISELDB=1", args)
+        self.assertFalse(any(a.startswith("EMU_TRACE=") for a in args))
+        self.assertFalse(any(a.startswith("EMU_THREADS=") for a in args))
+
 
 if __name__ == "__main__":
     unittest.main()

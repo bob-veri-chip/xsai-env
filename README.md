@@ -148,6 +148,7 @@ make llvm            # Optional source build; normally use prebuilt AME LLVM abo
 make nemu            # Build NEMU
 make qemu            # Build qemu-system-riscv64 and qemu-riscv64
 make xsai            # Build XSAI Verilator simulation
+make emu-lemu        # Build the Lemu-based XSAI simulation path
 make emu-gsim        # Build the gsim-based XSAI simulation path
 make gsim            # Download the latest gsim release -> local/bin/gsim
 ```

@@ -130,6 +130,7 @@ help:
 	@echo "  make docker-nemu-image       - Build NEMU Docker image from centos.Dockerfile"
 	@echo "  make nemu-matrix-ref-so-docker - Build riscv64-matrix-xs-ref shared library in Docker"
 	@echo "  make xsai        - Build XSAI RTL simulation (Verilator)"
+	@echo "  make emu-lemu    - Build XSAI RTL simulation (Lemu)"
 	@echo "  make test-matrix - Run matrix simple test"
 	@echo "  make update      - Update submodules to latest"
 	@echo "  make versions    - Regenerate VERSIONS file from current submodule state"
@@ -230,6 +231,9 @@ xsai: emu-verilator
 emu-gsim:
 	$(MAKE) -C $(NOOP_HOME) gsim -j CONFIG=DefaultMatrixConfig WITH_DRAMSIM3=1 EMU_TRACE="fst" GSIM=1 CFLAGS="$(HOST_NO_CET_FLAG)" CXXFLAGS="$(HOST_NO_CET_FLAG)"
 
+emu-lemu: _ensure_xsai_init
+	$(MAKE) -C $(NOOP_HOME) lemu -j8 CONFIG=DefaultMatrixConfig WITH_DRAMSIM3=1 WITH_CHISELDB=1 WITH_CONSTANTIN=0 CFLAGS="$(HOST_NO_CET_FLAG)" CXXFLAGS="$(HOST_NO_CET_FLAG)"
+
 test-matrix:
 	$(MAKE) -C $(AM_HOME)/tests/ame-mmacc ARCH=riscv64-xs TOOLCHAIN=LLVM
 	$(MAKE) run-emu PAYLOAD=$(AM_HOME)/tests/ame-mmacc/build/ame-mmacc-riscv64-xs.bin
@@ -275,7 +279,7 @@ ccdb-append:
 DIFF      ?= 1
 LOG       ?= 0
 EMU_SCRIPT := ./scripts/run-emu.sh
-# DiffTest keeps this symlink for the selected Verilator/GSIM backend.
+# DiffTest keeps this symlink for the selected Verilator/GSIM/Lemu backend.
 EMU_BIN ?= $(NOOP_HOME)/build/emu
 export EMU_BIN
 EMU_FLAGS   = $(if $(filter 1,$(LOG)),--log,) $(if $(filter 1,$(DIFF)),--diff,)

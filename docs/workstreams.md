@@ -22,7 +22,7 @@ This document is the map for both humans and AI agents:
 | Workstream | Primary paths | Owns | Typical entrypoints |
 |---|---|---|---|
 | `xsai-env` base | `Makefile`, `scripts/`, `mk/`, `env.sh`, `.envrc*`, `README.md`, `AGENTS.md`, `docs/`, `.gitmodules` | Top-level orchestration, shared environment, repository conventions, integration docs | `make init-force`, `make test-smoke`, `make help` |
-| RTL / hardware model | `XSAI/` | XiangShan AI RTL, generated Verilog, emulator build, difftest integration on the DUT side; the main matrix-core hotspot is `XSAI/CUTE/` | `make xsai`, `make emu-gsim`, `make run-emu`, `make run-emu-debug` |
+| RTL / hardware model | `XSAI/` | XiangShan AI RTL, generated Verilog, emulator build, difftest integration on the DUT side; the main matrix-core hotspot is `XSAI/CUTE/` | `make xsai`, `make emu-lemu`, `make emu-gsim`, `make run-emu`, `make run-emu-debug` |
 | Golden model / ISA reference | `NEMU/` | Golden ISA behavior, difftest reference `.so`, standalone profiling/checkpoint support, debug monitor | `make nemu`, NEMU defconfigs, `build/riscv64-nemu-interpreter-so` |
 | System and user-mode simulator | `qemu/` | Linux/user-mode simulation, QEMU machine support, profiling plugin used by the repo checkpoint flow | `make qemu`, `make run-qemu` |
 | Firmware / boot flow | `firmware/` | Linux, rootfs, OpenSBI, DTB, GCPT boot payloads, restore-only payload, board boot flow | `make firmware`, `make -C firmware build-dtb`, `make run-qemu` |
